@@ -347,3 +347,28 @@ The three examples show different uses of context-free modelling: nested structu
 **Prepared by:** G Tarun Varma  
 **Register Number:** RA2411026050037  
 **Course:** 21CSC301T — Formal Language and Automata
+
+
+## 11. Interactive web deployment (Streamlit)
+
+The repository includes a browser-based interactive demo in `app.py`.
+
+### Run locally
+
+```bash
+python -m pip install -r requirements.txt
+streamlit run app.py
+```
+
+Streamlit opens the app in your browser. Use the tabs to test balanced brackets, arithmetic expressions, and palindromes.
+
+### Deploy with Streamlit Community Cloud
+
+1. Push this repository to GitHub (the app files are in the `main` branch).
+2. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/) using GitHub.
+3. Select **Create app** and choose repository `gt-varma/FLA-Task3-PDA-CFG-Case-Studies`.
+4. Select branch `main` and set the main file path to `app.py`.
+5. Open **Advanced settings** if needed, choose the Python version supported by the app, and click **Deploy**.
+
+The deployed app installs dependencies from `requirements.txt`. The Streamlit app is a visual companion to the formal models; the palindrome tab explicitly identifies its Python check as a reference validator rather than a literal PDA simulation.
+
