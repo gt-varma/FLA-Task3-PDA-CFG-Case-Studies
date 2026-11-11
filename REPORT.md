@@ -28,7 +28,14 @@ A compact grammar is:
 S → SS | (S) | [S] | {S} | () | [] | {}
 ```
 
-The `SS` alternative permits multiple parse-tree groupings for concatenated blocks. For example, a concatenation of three balanced blocks can be split into a first block plus the remaining two, or the first two plus the last. The grammar is therefore ambiguous with respect to concatenation structure.
+The `SS` alternative permits multiple parse-tree groupings for concatenated blocks. For `()()()`, two distinct derivations are possible:
+
+```
+S ⇒ SS ⇒ (SS)S ⇒ ()SS ⇒ ()()S ⇒ ()()()
+S ⇒ SS ⇒ S(SS) ⇒ ()(SS) ⇒ ()()S ⇒ ()()()
+```
+
+These correspond to the two parse-tree groupings `(SS)S` and `S(SS)`. The grammar is therefore ambiguous with respect to concatenation structure.
 
 An unambiguous revised grammar is:
 
@@ -175,7 +182,7 @@ S ⇒ aSa ⇒ aba
 
 ### 4.3 PDA strategy and determinism
 
-For an even palindrome `w wᴿ` with no centre marker, a PDA must guess where the first half ends. An NPDA can push symbols while reading the first half, nondeterministically take an ε-transition to a matching phase, then pop one matching symbol for each remaining input symbol. It accepts when input is exhausted and only the bottom marker remains. This midpoint guess is the source of nondeterminism.
+For an unmarked palindrome, a PDA must guess the midpoint. An NPDA pushes symbols while reading the first half, nondeterministically takes an ε-transition to a matching phase, then compares and pops one symbol for each remaining input symbol. To cover even lengths, it switches phases between input symbols; to cover odd lengths, it may consume exactly one middle symbol during the switch without pushing or popping it. It accepts when input is exhausted and only the bottom marker remains. The midpoint guess is the source of nondeterminism.
 
 If the input format contains a special centre marker `c`, the language `{w c wᴿ : w ∈ {a,b}*}` can be recognised deterministically: push symbols before c, switch phase when c is read, and compare/pop after c. The marker makes the midpoint explicit. This marked-centre language is a subset-format variant, not the same input language as all unmarked palindromes.
 
