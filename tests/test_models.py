@@ -1,8 +1,8 @@
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from task3.pda_cfg.models import balanced_brackets, validate_expression, is_palindrome, palindrome_derivation
+from pda_cfg.models import balanced_brackets, validate_expression, is_palindrome, palindrome_derivation
 
 
 def test_balanced_brackets_examples():
