@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive CFG and PDA case studies for Formal Language and Automata Task 3.">
+  <title>FLA Task 3 | CFG & PDA Case Studies</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="eyebrow">21CSC301T · FORMAL LANGUAGE AND AUTOMATA · TASK 3</div>
+    <h1>CFG &amp; PDA Case Studies</h1>
+    <p>Interactive demonstrations of nested brackets, arithmetic syntax, and palindrome recognition.</p>
+    <div class="student">G Tarun Varma <span>·</span> RA2411026050037</div>
+  </header>
+
+  <main>
+    <nav class="tabs" aria-label="Case studies">
+      <button class="tab active" data-tab="brackets">01 · Balanced Brackets</button>
+      <button class="tab" data-tab="expressions">02 · Arithmetic Expressions</button>
+      <button class="tab" data-tab="palindrome">03 · Palindromes</button>
+      <button class="tab" data-tab="theory">CFG &amp; PDA Notes</button>
+    </nav>
+
+    <section class="panel active" id="brackets">
+      <div class="section-head"><div><div class="eyebrow">CASE STUDY 01</div><h2>Balanced bracket validation</h2></div><span class="tag">Deterministic stack</span></div>
+      <p class="lead">Check whether every closing bracket matches the latest unmatched opener.</p>
+      <div class="input-row"><input id="bracket-input" value="{[()]}" aria-label="Bracket string"><button id="bracket-run">Validate</button></div>
+      <div id="bracket-result" class="result neutral">Try a string such as <code>{[()]}</code> or <code>([)]</code>.</div>
+      <h3>Stack processing</h3><pre id="bracket-trace" class="trace">Your stack trace will appear here.</pre>
+      <details><summary>CFG and PDA construction</summary>
+        <h4>Ambiguous CFG</h4><pre>S → SS | (S) | [S] | {S} | () | [] | {}</pre>
+        <p>For <code>()()()</code>, concatenation can be grouped as <code>(SS)S</code> or <code>S(SS)</code>, so the grammar is ambiguous.</p>
+        <h4>Unambiguous revised CFG</h4><pre>S → BS | B
+B → (S) | () | [S] | [] | {S} | {}</pre>
+        <p>The PDA pushes opening brackets and pops only a matching opener. It accepts when the input is consumed and only the bottom marker remains.</p>
+        <p><strong>Limitation:</strong> this checks delimiter nesting only, not complete programming-language syntax or delimiters inside strings/comments.</p>
+      </details>
+    </section>
+
+    <section class="panel" id="expressions">
+      <div class="section-head"><div><div class="eyebrow">CASE STUDY 02</div><h2>Arithmetic expression syntax</h2></div><span class="tag">Predictive parser</span></div>
+      <p class="lead">Validate expressions over <code>id</code>, <code>+</code>, <code>*</code>, and parentheses. Multiplication has higher precedence than addition.</p>
+      <div class="input-row"><input id="expression-input" value="id+id*id" aria-label="Arithmetic expression"><button id="expression-run">Parse</button></div>
+      <div id="expression-result" class="result neutral">Try <code>id+id*id</code>, <code>(id+id)*id</code>, or <code>id+*id</code>.</div>
+      <h3>Predictive parser trace</h3><pre id="expression-trace" class="trace">Your parser trace will appear here.</pre>
+      <details><summary>CFG and PDA construction</summary>
+        <h4>Naïve ambiguous grammar</h4><pre>E → E + E | E * E | (E) | id</pre>
+        <p>For <code>id+id*id</code>, the naïve grammar permits both <code>id+(id*id)</code> and <code>(id+id)*id</code>.</p>
+        <h4>Grammar encoding precedence</h4><pre>E → E + T | T
+T → T * F | F
+F → (E) | id</pre>
+        <h4>Left-recursion-free predictive grammar</h4><pre>E  → T E'
+E' → + T E' | ε
+T  → F T'
+T' → * F T' | ε
+F  → ( E ) | id</pre>
+        <p>A generic CFG-to-NPDA expands variables using ε-transitions and matches terminals against the input. This interactive parser is a deterministic predictive parser using look-ahead, not a literal simulation of the generic NPDA.</p>
+        <p><strong>Limitation:</strong> this validates token-level syntax; it does not evaluate expressions, resolve identifiers, or perform type checking.</p>
+      </details>
+    </section>
+
+    <section class="panel" id="palindrome">
+      <div class="section-head"><div><div class="eyebrow">CASE STUDY 03</div><h2>Palindrome recognition</h2></div><span class="tag">NPDA midpoint guess</span></div>
+      <p class="lead">Check strings over <code>{a,b}</code> that read the same forwards and backwards. The empty string is included.</p>
+      <div class="input-row"><input id="palindrome-input" value="abba" aria-label="Palindrome string"><button id="palindrome-run">Check</button></div>
+      <div id="palindrome-result" class="result neutral">Try <code>abba</code>, <code>aba</code>, or <code>abab</code>.</div>
+      <h3>CFG derivation</h3><pre id="palindrome-trace" class="trace">A derivation will appear for accepted input.</pre>
+      <details><summary>CFG and PDA strategy</summary>
+        <h4>CFG</h4><pre>S → aSa | bSb | a | b | ε</pre>
+        <p>Example derivation for <code>abba</code>:</p><pre>S ⇒ aSa
+  ⇒ abSba
+  ⇒ abεba
+  ⇒ abba</pre>
+        <p>An NPDA pushes symbols from the first half, nondeterministically guesses the midpoint, then compares and pops symbols from the second half. For odd lengths it consumes one middle symbol during the switch; for even lengths it switches between symbols.</p>
+        <p>A marked-centre language <code>{wcwᴿ : w ∈ {a,b}*}</code> can be recognised deterministically because the marker <code>c</code> identifies the midpoint.</p>
+        <p><strong>Implementation note:</strong> this browser validator checks the reversal property directly; it is a reference recognizer, not a literal PDA simulator.</p>
+      </details>
+    </section>
+
+    <section class="panel" id="theory">
+      <div class="eyebrow">CONCEPT SUMMARY</div><h2>Why CFGs and PDAs?</h2>
+      <div class="cards">
+        <article><h3>Balanced brackets</h3><p>A stack stores arbitrarily nested opening delimiters and checks matching closing delimiters.</p></article>
+        <article><h3>Arithmetic expressions</h3><p>Grammar structure handles nested parentheses and separates operator precedence levels.</p></article>
+        <article><h3>Palindromes</h3><p>An NPDA can guess the midpoint and compare an unbounded first half with the remaining input.</p></article>
+      </div>
+      <h3>Why finite automata are insufficient</h3>
+      <p>A finite automaton has only finite control. It cannot retain an unbounded nesting history or an arbitrarily long first half for later comparison. A PDA adds a stack, which provides the memory required by these context-free models.</p>
+      <h3>Comparison</h3>
+      <div class="table-wrap"><table><thead><tr><th>Case study</th><th>Required memory / grammar feature</th><th>Model</th></tr></thead><tbody>
+        <tr><td>Balanced brackets</td><td>Unbounded nesting and matching types</td><td>Deterministic push/pop</td></tr>
+        <tr><td>Arithmetic expressions</td><td>Nested parentheses and precedence</td><td>CFG and predictive parser</td></tr>
+        <tr><td>Palindromes</td><td>Match an unbounded first half with its reverse</td><td>NPDA midpoint guess</td></tr>
+      </tbody></table></div>
+    </section>
+  </main>
+  <footer>G Tarun Varma · RA2411026050037 · 21CSC301T Formal Language and Automata</footer>
+  <script src="app.js"></script>
+</body>
+</html>
