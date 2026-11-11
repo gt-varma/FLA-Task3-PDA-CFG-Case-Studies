@@ -372,3 +372,24 @@ Streamlit opens the app in your browser. Use the tabs to test balanced brackets,
 
 The deployed app installs dependencies from `requirements.txt`. The Streamlit app is a visual companion to the formal models; the palindrome tab explicitly identifies its Python check as a reference validator rather than a literal PDA simulation.
 
+
+
+## 11. Live website with GitHub Pages
+
+The interactive browser version is in `docs/` and uses plain HTML, CSS, and JavaScript. It runs directly as a static GitHub Pages site; Python and Streamlit are not required for the website.
+
+### Enable GitHub Pages
+
+1. Open this repository on GitHub.
+2. Go to **Settings → Pages**.
+3. Under **Build and deployment**, choose **Deploy from a branch**.
+4. Select branch **main** and folder **/docs**, then click **Save**.
+5. Wait for the Pages deployment to finish.
+
+**Live website URL:** https://gt-varma.github.io/FLA-Task3-PDA-CFG-Case-Studies/
+
+The site contains interactive validators for balanced brackets, arithmetic expressions, and palindromes, with CFG/PDA notes and processing traces. The palindrome browser check is explicitly identified as a reversal-property reference validator, not a literal PDA simulator.
+
+### Run locally
+
+Open `docs/index.html` in a web browser. No package installation is needed.
